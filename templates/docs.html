@@ -28,10 +28,10 @@
                 <li>Add your form fields as usual</li>
             </ol>
 
-            <div class="alert info">
+            <!-- <div class="alert info">
                 <strong>Note:</strong> Replace <code>your-domain.com</code> with your actual domain where FormSendr is
                 hosted.
-            </div>
+            </div> -->
         </section>
 
         <section id="basic-usage" class="docs-section">
@@ -39,7 +39,7 @@
             <p>Here's the simplest way to use FormSendr:</p>
 
             <div class="code-block">
-                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://your-domain.com/send/your-email@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
+                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://formsendr.onrender.com/send/your-email@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
   <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"text"</span> <span class="code-attr">name=</span><span class="code-string">"name"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Your Name"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
   <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"email"</span> <span class="code-attr">name=</span><span class="code-string">"email"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Your Email"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
   <span class="code-tag">&lt;textarea</span> <span class="code-attr">name=</span><span class="code-string">"message"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Your Message"</span> <span class="code-attr">required</span><span class="code-tag">&gt;&lt;/textarea&gt;</span>
@@ -53,7 +53,7 @@
 
             <h3>Contact Form</h3>
             <div class="code-block">
-                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://your-domain.com/send/contact@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
+                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://formsendr.onrender.com/send/contact@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
   <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"form-group"</span><span class="code-tag">&gt;</span>
     <span class="code-tag">&lt;label</span> <span class="code-attr">for=</span><span class="code-string">"name"</span><span class="code-tag">&gt;</span>Name:<span class="code-tag">&lt;/label&gt;</span>
     <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"text"</span> <span class="code-attr">id=</span><span class="code-string">"name"</span> <span class="code-attr">name=</span><span class="code-string">"name"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
@@ -73,12 +73,38 @@
 <span class="code-tag">&lt;/form&gt;</span></pre>
             </div>
 
+            <h3>Basic Contact Form</h3>
+            <div class="code-block">
+                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://formsendr.onrender.com/send/your-email@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"form-group"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;label</span> <span class="code-attr">for=</span><span class="code-string">"name"</span><span class="code-tag">&gt;</span>Name:<span class="code-tag">&lt;/label&gt;</span>
+    <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"text"</span> <span class="code-attr">id=</span><span class="code-string">"name"</span> <span class="code-attr">name=</span><span class="code-string">"name"</span> <span class="code-attr">required</span> <span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;/div&gt;</span>
+  
+  <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"form-group"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;label</span> <span class="code-attr">for=</span><span class="code-string">"email"</span><span class="code-tag">&gt;</span>Email:<span class="code-tag">&lt;/label&gt;</span>
+    <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"email"</span> <span class="code-attr">id=</span><span class="code-string">"email"</span> <span class="code-attr">name=</span><span class="code-string">"email"</span> <span class="code-attr">required</span> <span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;/div&gt;</span>
+  
+  <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"form-group"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;label</span> <span class="code-attr">for=</span><span class="code-string">"message"</span><span class="code-tag">&gt;</span>Message:<span class="code-tag">&lt;/label&gt;</span>
+    <span class="code-tag">&lt;textarea</span> <span class="code-attr">id=</span><span class="code-string">"message"</span> <span class="code-attr">name=</span><span class="code-string">"message"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span><span class="code-tag">&lt;/textarea&gt;</span>
+  <span class="code-tag">&lt;/div&gt;</span>
+  
+  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"hidden"</span> <span class="code-attr">name=</span><span class="code-string">"_subject"</span> <span class="code-attr">value=</span><span class="code-string">"New Contact Form Submission"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"hidden"</span> <span class="code-attr">name=</span><span class="code-string">"_next"</span> <span class="code-attr">value=</span><span class="code-string">"https://your-website.com/thank-you"</span><span class="code-tag">&gt;</span>
+  
+  <span class="code-tag">&lt;button</span> <span class="code-attr">type=</span><span class="code-string">"submit"</span><span class="code-tag">&gt;</span>Send Message<span class="code-tag">&lt;/button&gt;</span>
+<span class="code-tag">&lt;/form&gt;</span></pre>
+            </div>
+            
             <h3>Newsletter Signup</h3>
             <div class="code-block">
-                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://your-domain.com/send/newsletter@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
+                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://formsendr.onrender.com/api/forms/your-form-id/submit"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
   <span class="code-tag">&lt;h3&gt;</span>Subscribe to our newsletter<span class="code-tag">&lt;/h3&gt;</span>
   <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"email"</span> <span class="code-attr">name=</span><span class="code-string">"email"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Enter your email"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
-  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"hidden"</span> <span class="code-attr">name=</span><span class="code-string">"subject"</span> <span class="code-attr">value=</span><span class="code-string">"New Newsletter Signup"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"hidden"</span> <span class="code-attr">name=</span><span class="code-string">"_subject"</span> <span class="code-attr">value=</span><span class="code-string">"New Newsletter Signup"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"hidden"</span> <span class="code-attr">name=</span><span class="code-string">"_next"</span> <span class="code-attr">value=</span><span class="code-string">"https://your-website.com/thank-you"</span><span class="code-tag">&gt;</span>
   <span class="code-tag">&lt;button</span> <span class="code-attr">type=</span><span class="code-string">"submit"</span><span class="code-tag">&gt;</span>Subscribe<span class="code-tag">&lt;/button&gt;</span>
 <span class="code-tag">&lt;/form&gt;</span></pre>
             </div>
@@ -89,7 +115,11 @@
             <p>FormSendr includes several security features to protect your forms:</p>
 
             <ul>
-                <li><strong>CSRF Protection</strong>: All forms are protected against Cross-Site Request Forgery
+                <li><strong>Simple Integration</strong>: Just point your form to <code>https://formsendr.onrender.com/send/your-email@example.com</code></li>
+                <li><strong>Custom Redirects</strong>: Use the <code>_next</code> parameter to redirect users after submission</li>
+                <li><strong>Custom Subjects</strong>: Set a custom email subject using the <code>_subject</code> field</li>
+                <li><strong>Professional Emails</strong>: Form data is formatted in a clean, professional HTML email</li>
+                <li><strong>Rate Limiting</strong>: Protected against spam with rate limiting (5 requests per minute)
                     attacks.</li>
                 <li><strong>Input Sanitization</strong>: All user input is sanitized to prevent XSS attacks.</li>
                 <li><strong>Rate Limiting</strong>: Protect against abuse with configurable rate limits.</li>

@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, jsonify, url_for, redirect, current_app
+from flask import Flask, render_template, request, jsonify, url_for, redirect, current_app, flash, abort
+from urllib.parse import urlparse, urljoin
 from flask_limiter import Limiter, RateLimitExceeded
 from flask_limiter.util import get_remote_address
 from flask_talisman import Talisman
 from flask_mail import Mail, Message
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 from email_validator import validate_email, EmailNotValidError
 import bleach
 import os
@@ -11,6 +13,12 @@ import logging
 
 # Initialize Flask app
 app = Flask(__name__)
+
+# Initialize CSRF Protection
+csrf = CSRFProtect(app)
+
+# Set secret key for CSRF
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-key-change-in-production')
 
 # Configure the application
 app.config.update(
@@ -114,23 +122,86 @@ def validate_form_data(form_data):
         return False, errors
     return True, {}
 
+def format_html_email(form_data):
+    """Format form data as a professional HTML email"""
+    # Start building the HTML email
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
+            .header { background-color: #4a6baf; color: white; padding: 20px; text-align: center; }
+            .content { padding: 20px; border: 1px solid #ddd; border-top: none; }
+            .field { margin-bottom: 15px; }
+            .field-label { font-weight: bold; color: #555; margin-bottom: 5px; display: block; }
+            .field-value { padding: 8px; background: #f9f9f9; border-radius: 4px; }
+            .footer { margin-top: 20px; font-size: 12px; color: #777; text-align: center; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h2>New Form Submission</h2>
+        </div>
+        <div class="content">
+    """
+    
+    # Add form fields
+    for key, value in form_data.items():
+        if key.lower() in ['_next', '_captcha', 'g-recaptcha-response', 'honeypot']:
+            continue
+            
+        html += f"""
+        <div class="field">
+            <span class="field-label">{key.replace('_', ' ').title()}:</span>
+            <div class="field-value">{value}</div>
+        </div>
+        """
+    
+    # Add footer
+    html += """
+        </div>
+        <div class="footer">
+            This email was sent from FormSendr. Please do not reply to this email.
+        </div>
+    </body>
+    </html>
+    """
+    
+    return html
+
 def send_form_submission_email(recipient_email, form_data):
     """Send form submission email to the recipient"""
-    sanitized_data = {}
-    for key, value in form_data.items():
-        if isinstance(value, str):
-            sanitized_data[key] = bleach.clean(value, tags=[], attributes={}, strip=True)
-        else:
-            sanitized_data[key] = value
-    
     try:
-        subject = f"New Form Submission from {sanitized_data.get('name', 'a user')}"
+        # Sanitize and prepare form data
+        sanitized_data = {}
+        for key, value in form_data.items():
+            if isinstance(value, str):
+                sanitized_data[key] = bleach.clean(value, tags=[], attributes={}, strip=True)
+            else:
+                sanitized_data[key] = value
+        
+        # Get subject from form data or use default
+        subject = sanitized_data.pop('_subject', 
+                  sanitized_data.pop('subject', 
+                  f"New Form Submission from {sanitized_data.get('name', 'a user')}"))
+        
+        # Prepare plain text version
+        text_body = "New form submission received:\n\n"
+        text_body += "\n".join(f"{k}: {v}" for k, v in sanitized_data.items())
+        
+        # Prepare HTML version
+        html_body = format_html_email(sanitized_data)
+        
+        # Create and send email
         msg = Message(
             subject=subject,
             recipients=[recipient_email],
-            body=f"New form submission received:\n\n" + 
-                 "\n".join(f"{k}: {v}" for k, v in sanitized_data.items())
+            body=text_body,
+            html=html_body,
+            sender=app.config.get('MAIL_DEFAULT_SENDER')
         )
+        
         mail.send(msg)
         return True, "Email sent successfully"
     except Exception as e:
@@ -194,21 +265,50 @@ def ping():
     """Health check endpoint."""
     return 'pong', 200
 
+@app.after_request
+def add_csrf_token(response):
+    # Add CSRF token to response headers for AJAX requests
+    response.headers['X-CSRFToken'] = generate_csrf()
+    return response
+
+@app.route('/send/<recipient_email>', methods=['POST'])
 @app.route('/submit/<recipient_email>', methods=['POST'])
 @limiter.limit("5 per minute")
+@csrf.exempt  # Disable CSRF for external form submissions
 def submit_form(recipient_email):
     """Handle form submissions and send emails"""
     try:
-        # Get form data
+        # Get form data from both JSON and form submissions
         if request.is_json:
             form_data = request.get_json()
         else:
-            form_data = request.form.to_dict()
+            # Handle both form data and URL-encoded data
+            form_data = {}
+            for key, values in request.form.lists():
+                if len(values) == 1:
+                    form_data[key] = values[0]
+                else:
+                    form_data[key] = values
+            
+            # Also check for JSON in the request body for API clients
+            if not form_data and request.data:
+                try:
+                    form_data = request.get_json(force=True) or {}
+                except:
+                    pass
+        
+        # Log the received data for debugging
+        logger.info(f"Received form data: {form_data}")
         
         # Validate form data
         is_valid, errors = validate_form_data(form_data)
         if not is_valid:
-            return jsonify({"status": "error", "message": "Invalid form data", "errors": errors}), 400
+            logger.warning(f"Form validation failed: {errors}")
+            if request.is_json:
+                return jsonify({"status": "error", "message": "Invalid form data", "errors": errors}), 400
+            else:
+                flash("Please fill in all required fields.", "error")
+                return redirect(url_for('contact'))
         
         # Sanitize input
         form_data = sanitize_input(form_data)
@@ -216,20 +316,79 @@ def submit_form(recipient_email):
         # Validate recipient email
         is_valid, email_error = is_valid_email(recipient_email)
         if not is_valid:
-            return jsonify({"status": "error", "message": "Invalid recipient email", "error": email_error}), 400
+            logger.warning(f"Invalid recipient email: {recipient_email}")
+            if request.is_json:
+                return jsonify({"status": "error", "message": "Invalid recipient email", "error": email_error}), 400
+            else:
+                flash("Invalid recipient email address.", "error")
+                return redirect(url_for('contact'))
         
         # Send email
         success, message = send_form_submission_email(recipient_email, form_data)
         if not success:
-            return jsonify({"status": "error", "message": "Failed to send email", "error": message}), 500
+            logger.error(f"Failed to send email: {message}")
+            if request.is_json:
+                return jsonify({"status": "error", "message": "Failed to send email", "error": message}), 500
+            else:
+                flash("Failed to send message. Please try again later.", "error")
+                return redirect(url_for('contact'))
         
-        return jsonify({"status": "success", "message": "Form submitted successfully"}), 200
+        logger.info(f"Email sent successfully to {recipient_email}")
+        
+        # Handle redirect if _next parameter is provided
+        next_url = form_data.get('_next')
+        if next_url and is_safe_url(next_url):
+            return redirect(next_url)
+            
+        # Return JSON response for API clients
+        if request.is_json or request.content_type == 'application/json':
+            return jsonify({
+                "status": "success", 
+                "message": "Form submitted successfully"
+            }), 200
+        else:
+            # For direct form submissions, return a simple success page
+            return """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Form Submitted Successfully</title>
+                <meta http-equiv="refresh" content="5;url=/" />
+                <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                    .success-message { color: #28a745; font-size: 24px; margin: 20px 0; }
+                </style>
+            </head>
+            <body>
+                <div class="success-message">✅ Form submitted successfully!</div>
+                <p>You'll be redirected back in 5 seconds...</p>
+                <p><a href="/">Click here</a> if you're not redirected automatically.</p>
+            </body>
+            </html>
+            """
     
     except RateLimitExceeded:
-        return jsonify({"status": "error", "message": "Rate limit exceeded. Please try again later."}), 429
+        error_msg = "Rate limit exceeded. Please try again later."
+        logger.warning(error_msg)
+        if request.is_json:
+            return jsonify({"status": "error", "message": error_msg}), 429
+        else:
+            flash(error_msg, "error")
+            return redirect(url_for('contact'))
     except Exception as e:
-        logger.error(f"Error processing form submission: {str(e)}")
-        return jsonify({"status": "error", "message": "An unexpected error occurred"}), 500
+        logger.error(f"Error processing form submission: {str(e)}", exc_info=True)
+        error_msg = "An unexpected error occurred. Please try again later."
+        if request.is_json:
+            return jsonify({"status": "error", "message": error_msg}), 500
+        else:
+            flash(error_msg, "error")
+            return redirect(url_for('contact'))
+
+def is_safe_url(target):
+    """Check if URL is safe for redirection"""
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 # Error handlers
 @app.errorhandler(404)
