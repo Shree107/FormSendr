@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Documentation - FormSendr{% endblock %}
+
+{% block content %}
+<div class="docs-container">
+    <div class="docs-sidebar">
+        <h3>Documentation</h3>
+        <ul class="docs-nav">
+            <li><a href="#getting-started">Getting Started</a></li>
+            <li><a href="#basic-usage">Basic Usage</a></li>
+            <li><a href="#form-examples">Form Examples</a></li>
+            <li><a href="#security">Security</a></li>
+            <li><a href="#rate-limiting">Rate Limiting</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+        </ul>
+    </div>
+
+    <div class="docs-content">
+        <section id="getting-started" class="docs-section">
+            <h2>Getting Started</h2>
+            <p>FormSendr makes it easy to handle form submissions without writing any backend code. Follow these simple
+                steps to get started:</p>
+
+            <ol>
+                <li>Update your form's <code>action</code> attribute to point to your FormSendr endpoint</li>
+                <li>Set the <code>method</code> to <code>POST</code></li>
+                <li>Add your form fields as usual</li>
+            </ol>
+
+            <div class="alert info">
+                <strong>Note:</strong> Replace <code>your-domain.com</code> with your actual domain where FormSendr is
+                hosted.
+            </div>
+        </section>
+
+        <section id="basic-usage" class="docs-section">
+            <h2>Basic Usage</h2>
+            <p>Here's the simplest way to use FormSendr:</p>
+
+            <div class="code-block">
+                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://your-domain.com/send/your-email@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"text"</span> <span class="code-attr">name=</span><span class="code-string">"name"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Your Name"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"email"</span> <span class="code-attr">name=</span><span class="code-string">"email"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Your Email"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;textarea</span> <span class="code-attr">name=</span><span class="code-string">"message"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Your Message"</span> <span class="code-attr">required</span><span class="code-tag">&gt;&lt;/textarea&gt;</span>
+  <span class="code-tag">&lt;button</span> <span class="code-attr">type=</span><span class="code-string">"submit"</span><span class="code-tag">&gt;</span>Send Message<span class="code-tag">&lt;/button&gt;</span>
+<span class="code-tag">&lt;/form&gt;</span></pre>
+            </div>
+        </section>
+
+        <section id="form-examples" class="docs-section">
+            <h2>Form Examples</h2>
+
+            <h3>Contact Form</h3>
+            <div class="code-block">
+                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://your-domain.com/send/contact@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"form-group"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;label</span> <span class="code-attr">for=</span><span class="code-string">"name"</span><span class="code-tag">&gt;</span>Name:<span class="code-tag">&lt;/label&gt;</span>
+    <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"text"</span> <span class="code-attr">id=</span><span class="code-string">"name"</span> <span class="code-attr">name=</span><span class="code-string">"name"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;/div&gt;</span>
+  
+  <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"form-group"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;label</span> <span class="code-attr">for=</span><span class="code-string">"email"</span><span class="code-tag">&gt;</span>Email:<span class="code-tag">&lt;/label&gt;</span>
+    <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"email"</span> <span class="code-attr">id=</span><span class="code-string">"email"</span> <span class="code-attr">name=</span><span class="code-string">"email"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;/div&gt;</span>
+  
+  <span class="code-tag">&lt;div</span> <span class="code-attr">class=</span><span class="code-string">"form-group"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;label</span> <span class="code-attr">for=</span><span class="code-string">"message"</span><span class="code-tag">&gt;</span>Message:<span class="code-tag">&lt;/label&gt;</span>
+    <span class="code-tag">&lt;textarea</span> <span class="code-attr">id=</span><span class="code-string">"message"</span> <span class="code-attr">name=</span><span class="code-string">"message"</span> <span class="code-attr">required</span><span class="code-tag">&gt;&lt;/textarea&gt;</span>
+  <span class="code-tag">&lt;/div&gt;</span>
+  
+  <span class="code-tag">&lt;button</span> <span class="code-attr">type=</span><span class="code-string">"submit"</span> <span class="code-attr">class=</span><span class="code-string">"btn"</span><span class="code-tag">&gt;</span>Send Message<span class="code-tag">&lt;/button&gt;</span>
+<span class="code-tag">&lt;/form&gt;</span></pre>
+            </div>
+
+            <h3>Newsletter Signup</h3>
+            <div class="code-block">
+                <pre><span class="code-tag">&lt;form</span> <span class="code-attr">action=</span><span class="code-string">"https://your-domain.com/send/newsletter@example.com"</span> <span class="code-attr">method=</span><span class="code-string">"POST"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;h3&gt;</span>Subscribe to our newsletter<span class="code-tag">&lt;/h3&gt;</span>
+  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"email"</span> <span class="code-attr">name=</span><span class="code-string">"email"</span> <span class="code-attr">placeholder=</span><span class="code-string">"Enter your email"</span> <span class="code-attr">required</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;input</span> <span class="code-attr">type=</span><span class="code-string">"hidden"</span> <span class="code-attr">name=</span><span class="code-string">"subject"</span> <span class="code-attr">value=</span><span class="code-string">"New Newsletter Signup"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;button</span> <span class="code-attr">type=</span><span class="code-string">"submit"</span><span class="code-tag">&gt;</span>Subscribe<span class="code-tag">&lt;/button&gt;</span>
+<span class="code-tag">&lt;/form&gt;</span></pre>
+            </div>
+        </section>
+
+        <section id="security" class="docs-section">
+            <h2>Security</h2>
+            <p>FormSendr includes several security features to protect your forms:</p>
+
+            <ul>
+                <li><strong>CSRF Protection</strong>: All forms are protected against Cross-Site Request Forgery
+                    attacks.</li>
+                <li><strong>Input Sanitization</strong>: All user input is sanitized to prevent XSS attacks.</li>
+                <li><strong>Rate Limiting</strong>: Protect against abuse with configurable rate limits.</li>
+                <li><strong>HTTPS</strong>: Always use HTTPS to ensure data is encrypted in transit.</li>
+            </ul>
+        </section>
+
+        <section id="rate-limiting" class="docs-section">
+            <h2>Rate Limiting</h2>
+            <p>To prevent abuse, FormSendr enforces the following rate limits by default:</p>
+
+            <ul>
+                <li><strong>5 requests per minute</strong> per IP address</li>
+                <li><strong>100 requests per day</strong> per IP address</li>
+            </ul>
+
+            <p>If a user exceeds these limits, they will receive a 429 Too Many Requests response.</p>
+        </section>
+
+        <section id="troubleshooting" class="docs-section">
+            <h2>Troubleshooting</h2>
+
+            <h3>Form Submissions Not Working</h3>
+            <p>If your form submissions aren't working, check the following:</p>
+
+            <ul>
+                <li>Ensure the form's <code>action</code> URL is correct</li>
+                <li>Make sure the form's <code>method</code> is set to <code>POST</code></li>
+                <li>Check your server logs for any error messages</li>
+                <li>Verify that your email address in the URL is valid</li>
+            </ul>
+
+            <h3>Not Receiving Emails</h3>
+            <p>If you're not receiving emails:</p>
+
+            <ul>
+                <li>Check your spam/junk folder</li>
+                <li>Verify that your email server isn't blocking the messages</li>
+                <li>Check the FormSendr server logs for any delivery errors</li>
+                <li>Ensure the email address in the URL is correct</li>
+            </ul>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .docs-container {
+        display: flex;
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        gap: 2rem;
+    }
+
+    .docs-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 2rem;
+        align-self: flex-start;
+    }
+
+    .docs-sidebar h3 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .docs-nav {
+        list-style: none;
+    }
+
+    .docs-nav li {
+        margin-bottom: 0.5rem;
+    }
+
+    .docs-nav a {
+        color: var(--gray-700);
+        text-decoration: none;
+        display: block;
+        padding: 0.5rem 0;
+        transition: color 0.2s;
+    }
+
+    .docs-nav a:hover {
+        color: var(--primary);
+    }
+
+    .docs-nav a.active {
+        color: var(--primary);
+        font-weight: 500;
+    }
+
+    .docs-content {
+        flex: 1;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .docs-section {
+        margin-bottom: 3rem;
+    }
+
+    .docs-section h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .docs-section h3 {
+        font-size: 1.5rem;
+        margin: 2rem 0 1rem;
+    }
+
+    .docs-section p,
+    .docs-section ul,
+    .docs-section ol {
+        margin-bottom: 1.25rem;
+        line-height: 1.7;
+    }
+
+    .docs-section ul,
+    .docs-section ol {
+        padding-left: 1.5rem;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.375rem;
+        margin: 1.5rem 0;
+    }
+
+    .alert.info {
+        background-color: #e0f2fe;
+        border-left: 4px solid #0ea5e9;
+    }
+
+    @media (max-width: 768px) {
+        .docs-container {
+            flex-direction: column;
+        }
+
+        .docs-sidebar {
+            width: 100%;
+            position: static;
+            margin-bottom: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Highlight active section in the sidebar
+    document.addEventListener('DOMContentLoaded', function () {
+        const sections = document.querySelectorAll('.docs-section');
+        const navLinks = document.querySelectorAll('.docs-nav a');
+
+        window.addEventListener('scroll', function () {
+            let current = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+
+                if (pageYOffset >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
