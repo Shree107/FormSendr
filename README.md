@@ -1,83 +1,100 @@
 # FormSendr API
 
-FormSendr is a Flask-based API that accepts form submissions and forwards them to a specified email address.
+A secure and efficient Flask-based API for handling form submissions and sending email notifications.
 
 ## Features
 
-- Accepts POST form submissions from any HTML form
-- Sends form data to a specified email address using Gmail SMTP
-- HTML and plain-text email templates
-- CSRF protection
-- Input sanitization
-- Rate limiting (5 requests per minute, 100 per day per IP)
-- Responsive success/error pages
+- 🔒 Secure form submission handling with input validation
+- ⚡ Rate limiting to prevent abuse
+- ✉️ Email notifications for form submissions
+- 🔄 Environment-based configuration
+- 🛡️ Security headers and Content Security Policy (CSP)
+- 🚀 Production-ready with Gunicorn
+- 📦 Simple, flat project structure
 
 ## Prerequisites
 
-- Python 3.8+
-- Gmail account (for sending emails)
+- Python 3.8 or higher
+- pip (Python package manager)
+- SMTP server credentials (e.g., Gmail, SendGrid, etc.)
 
-## Setup
+## Quick Start
 
-1. Clone the repository:
+1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/yourusername/formsendr-api.git
    cd formsendr-api
    ```
 
-2. Create and activate a virtual environment:
+2. **Set up a virtual environment**
    ```bash
+   # Windows
    python -m venv venv
-   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   .\venv\Scripts\activate
+
+   # macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
    ```
 
-3. Install dependencies:
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Create a `.env` file based on `.env.example` and update with your settings:
+4. **Configure environment variables**
    ```bash
    cp .env.example .env
    ```
+   Edit the `.env` file with your configuration.
 
-5. Update the `.env` file with your Gmail credentials and other settings.
+5. **Run the development server**
+   ```bash
+   flask run
+   ```
 
 ## Configuration
 
-Edit the `.env` file with your configuration:
+Create a `.env` file with the following variables:
 
 ```ini
-# Gmail SMTP Configuration
+# Application Settings
+SECRET_KEY=your-secret-key-change-in-production
+FLASK_ENV=development  # or 'production' for production
+FLASK_DEBUG=True
+
+# Email Configuration (Gmail example)
 MAIL_SERVER=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USE_TLS=True
 MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password  # Use App Password for Gmail
+MAIL_PASSWORD=your-app-specific-password
 MAIL_DEFAULT_SENDER=your-email@gmail.com
 
-# Security
-SECRET_KEY=your-secret-key
-CSRF_SECRET_KEY=your-csrf-secret-key
+# Security Settings
+SESSION_COOKIE_SECURE=False  # Set to True in production with HTTPS
+FORCE_HTTPS=False  # Set to True in production
 
 # Rate Limiting
-RATE_LIMIT_PER_MINUTE=5
 RATE_LIMIT_PER_DAY=100
+RATE_LIMIT_PER_MINUTE=5
 ```
 
-### Gmail Setup
+## API Endpoints
 
-1. Enable 2-Step Verification on your Google Account
-2. Generate an App Password for your application
-3. Use the generated app password in the `MAIL_PASSWORD` field
+### `GET /ping`
+- **Description**: Health check endpoint
+- **Response**: `200 OK` with `pong`
 
-## Running the Application
+### `POST /submit/<recipient_email>`
+- **Description**: Submit a form
+- **Headers**: `Content-Type: application/json`
+- **Request Body**: JSON object with form data
+- **Response**: JSON object with status and message
 
-```bash
-# Development
-python wsgi.py
+## Deployment
 
-# Production (using waitress)
+### Using Gunicorn
 pip install waitress
 waitress-serve --port=5000 wsgi:app
 ```

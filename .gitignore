@@ -19,36 +19,56 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual Environment
+.venv
+env/
 venv/
 ENV/
+env.bak/
+venv.bak/
 
 # Environment variables
 .env
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# Testing
-.coverage
-htmlcov/
-.pytest_cache/
-
-# Logs
-*.log
+*~
 
 # Local development
 instance/
 .webassets-cache
 
-# macOS
-.DS_Store
+# Database
+*.sqlite
+*.sqlite3
 
-# Windows
+# Logs
+*.log
+
+# Local development
+.DS_Store
 Thumbs.db
 ehthumbs.db
 Desktop.ini
