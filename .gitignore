@@ -29,9 +29,14 @@ ENV/
 env.bak/
 venv.bak/
 
+
+# Virtual Environment
+venv/
+ENV/
+
+
 # Environment variables
 .env
-
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -64,11 +69,23 @@ instance/
 *.sqlite
 *.sqlite3
 
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
 # Logs
 *.log
 
 # Local development
 .DS_Store
+instance/
+.webassets-cache
+
+# macOS
+.DS_Store
+
+# Windows
 Thumbs.db
 ehthumbs.db
 Desktop.ini

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>New Form Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .field {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        .field-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .field-value {
+            color: #34495e;
+            word-break: break-word;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>New Form Submission</h1>
+        
+        {% for key, value in form_data.items() %}
+            <div class="field">
+                <div class="field-name">{{ key|title }}</div>
+                <div class="field-value">
+                    {% if value is string %}
+                        {{ value|e }}
+                    {% else %}
+                        {{ value|tojson|safe }}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        
+        <div class="footer">
+            <p>This email was sent from FormSendr. Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -38,11 +38,43 @@ A secure and efficient Flask-based API for handling form submissions and sending
    ```
 
 3. **Install dependencies**
+
+FormSendr is a Flask-based API that accepts form submissions and forwards them to a specified email address.
+
+## Features
+
+- Accepts POST form submissions from any HTML form
+- Sends form data to a specified email address using Gmail SMTP
+- HTML and plain-text email templates
+- CSRF protection
+- Input sanitization
+- Rate limiting (5 requests per minute, 100 per day per IP)
+- Responsive success/error pages
+
+## Prerequisites
+
+- Python 3.8+
+- Gmail account (for sending emails)
+
+## Setup
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd formsendr-api
+   ```
+
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   ```
+
+3. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-
-4. **Configure environment variables**
+4. Configure environment variables
    ```bash
    cp .env.example .env
    ```
@@ -78,6 +110,27 @@ FORCE_HTTPS=False  # Set to True in production
 # Rate Limiting
 RATE_LIMIT_PER_DAY=100
 RATE_LIMIT_PER_MINUTE=5
+
+## Configuration
+
+Edit the `.env` file with your configuration:
+
+```ini
+# Gmail SMTP Configuration
+   MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-specific-password
+MAIL_DEFAULT_SENDER=your-email@gmail.com
+
+# Security Settings
+SESSION_COOKIE_SECURE=False  # Set to True in production with HTTPS
+FORCE_HTTPS=False  # Set to True in production
+
+# Rate Limiting
+RATE_LIMIT_PER_DAY=100
+RATE_LIMIT_PER_MINUTE=5
 ```
 
 ## API Endpoints
@@ -97,9 +150,41 @@ RATE_LIMIT_PER_MINUTE=5
 ### Using Gunicorn
 pip install waitress
 waitress-serve --port=5000 wsgi:app
+MAIL_PASSWORD=your-app-password  # Use App Password for Gmail
+MAIL_DEFAULT_SENDER=your-email@gmail.com
+
+# Security
+SECRET_KEY=your-secret-key
+CSRF_SECRET_KEY=your-csrf-secret-key
+
+# Rate Limiting
+RATE_LIMIT_PER_MINUTE=5
+RATE_LIMIT_PER_DAY=100
+```
+
+### Gmail Setup
+
+1. Enable 2-Step Verification on your Google Account
+2. Generate an App Password for your application
+3. Use the generated app password in the `MAIL_PASSWORD` field
+
+## Running the Application
+
+### Development
+```bash
+python app.py
+```
+
+### Production (using Gunicorn)
+```bash
+gunicorn --config gunicorn_config.py app:app
 ```
 
 The API will be available at `http://localhost:5000`
+
+### Deployment
+
+For deployment instructions (Render, Heroku, etc.), see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## Usage
 
